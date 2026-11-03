@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amel's Rainbow Claw Machine 🌈</title>
+
+<style>
+:root {
+ --pink:#ff8fc7;
+ --purple:#b99aff;
+ --blue:#8de0ff;
+ --yellow:#ffe58b;
+ --green:#a9f3c2;
+ --text:#765477;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ font-family:"Trebuchet MS",Arial,sans-serif;
+ color:var(--text);
+ text-align:center;
+ background:linear-gradient(135deg,#ffdbed,#dcd9ff,#c9f2ff,#fff1bd);
+ background-size:300% 300%;
+ animation:bg 12s ease infinite;
+ overflow-x:hidden;
+}
+@keyframes bg{
+ 0%,100%{background-position:0 50%}
+ 50%{background-position:100% 50%}
+}
+button{
+ border:2px solid white;
+ border-radius:18px;
+ padding:12px 18px;
+ margin:5px;
+ background:linear-gradient(135deg,#ff9fce,#c3a4ff);
+ color:#70446d;
+ font-size:14px;
+ font-weight:bold;
+ box-shadow:0 5px 0 #bd91d3;
+ cursor:pointer;
+ transition:.2s;
+}
+button:active{transform:translateY(4px);box-shadow:none}
+button:hover{filter:brightness(1.06);transform:scale(1.04)}
+button:disabled{opacity:.4;cursor:not-allowed}
+h1{color:#d86fae;text-shadow:2px 2px white}
+h2{color:#bb80c7}
+p{line-height:1.65}
+.screen{
+ display:none;
+ min-height:100vh;
+ padding:24px 14px;
+ align-items:center;
+ justify-content:center;
+ flex-direction:column;
+ animation:enter .45s ease;
+}
+#home{display:flex}
+@keyframes enter{
+ from{opacity:0;transform:translateY(15px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.card{
+ width:min(100%,510px);
+ padding:23px 17px;
+ border:3px solid white;
+ border-radius:28px;
+ background:#ffffffdf;
+ box-shadow:0 9px 0 #d7a9dd,0 15px 35px #9e75ae55;
+}
+.hero{font-size:90px;animation:bob 2s infinite}
+@keyframes bob{
+ 0%,100%{transform:translateY(0) rotate(-4deg)}
+ 50%{transform:translateY(-12px) rotate(4deg)}
+}
+.small{font-size:12px;opacity:.75}
+.rainbow{
+ height:12px;
+ border-radius:20px;
+ background:linear-gradient(90deg,red,orange,yellow,#7ddd8b,#6ccfff,#a78bfa,#ff9fce);
+ margin:15px 0;
+}
+.topbar{
+ width:min(100%,510px);
+ display:flex;
+ justify-content:space-between;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-bottom:12px;
+ font-weight:bold;
+}
+.pill{
+ padding:9px 13px;
+ border-radius:20px;
+ background:#ffffffd9;
+ border:2px solid white;
+}
+.machine{
+ width:min(100%,390px);
+ margin:10px auto;
+ padding:12px;
+ background:linear-gradient(135deg,#ffadd8,#bba5ff,#91e1ff);
+ border:5px solid white;
+ border-radius:25px;
+ box-shadow:0 8px 0 #9b83ca,0 15px 25px #8062a655;
+}
+.machine-top{
+ background:#fff7fc;
+ border-radius:15px 15px 5px 5px;
+ padding:9px;
+ font-weight:bold;
+ color:#bd75ae;
+}
+.window{
+ height:255px;
+ position:relative;
+ overflow:hidden;
+ border:5px solid white;
+ border-radius:12px;
+ background:linear-gradient(#c5edff,#fff0f8);
+}
+.floor{
+ position:absolute;
+ height:43px;
+ bottom:0;
+ left:0;
+ right:0;
+ background:linear-gradient(90deg,#ffbadc,#d1baff,#b6edff);
+ border-top:4px solid white;
+}
+.toy{
+ position:absolute;
+ bottom:18px;
+ font-size:42px;
+ transform:translateX(-50%);
+ filter:drop-shadow(0 4px 2px #8a75a455);
+ transition:left .25s;
+}
+#claw{
+ position:absolute;
+ z-index:3;
+ top:0;
+ left:50%;
+ transform:translateX(-50%);
+ width:62px;
+ height:110px;
+ transition:left .25s;
+}
+.cable{
+ width:4px;
+ height:54px;
+ background:#806d9c;
+ margin:auto;
+}
+.grabber{
+ width:48px;
+ height:43px;
+ position:relative;
+ margin:auto;
+}
+.grabber:before,.grabber:after{
+ content:"";
+ position:absolute;
+ top:0;
+ width:14px;
+ height:42px;
+ border:5px solid #8975a9;
+ border-top:0;
+ border-radius:0 0 15px 15px;
+}
+.grabber:before{left:3px;transform:rotate(18deg)}
+.grabber:after{right:3px;transform:rotate(-18deg)}
+#claw.drop{animation:drop .9s ease-in-out}
+@keyframes drop{
+ 0%{transform:translate(-50%,0)}
+ 50%{transform:translate(-50%,125px)}
+ 100%{transform:translate(-50%,0)}
+}
+.machine-controls{
+ display:flex;
+ justify-content:center;
+ flex-wrap:wrap;
+ gap:4px;
+ margin-top:12px;
+}
+.machine-controls button{min-width:75px}
+#collectionList{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:9px;
+ margin:15px 0;
+}
+.prize{
+ background:#fff1fa;
+ border:2px solid white;
+ border-radius:15px;
+ padding:12px 4px;
+ font-size:29px;
+}
+.prize small{
+ display:block;
+ font-size:10px;
+ margin-top:5px;
+}
+.float{
+ position:fixed;
+ top:-35px;
+ pointer-events:none;
+ z-index:10;
+ animation:fall linear forwards;
+}
+@keyframes fall{
+ to{transform:translateY(110vh) rotate(450deg);opacity:0}
+}
+#popup{
+ position:fixed;
+ z-index:20;
+ inset:0;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:18px;
+ background:#76547788;
+}
+.popup-card{
+ background:white;
+ width:min(100%,380px);
+ padding:25px;
+ border:4px solid #ffb9dd;
+ border-radius:28px;
+ box-shadow:0 10px 0 #d6a5d6;
+ animation:enter .4s;
+}
+#popupEmoji{font-size:75px}
+#popupTitle{color:#d86fae}
+.music-btn{font-size:12px}
+</style>
+</head>
+
+<body>
+
+<!-- MUSIK BARU -->
+<audio id="music"
+ src="ssstik.io_1793716047351.mp3"
+ preload="auto"
+ loop></audio>
+
+<!-- HOME -->
+<section class="screen" id="home">
+ <div class="card">
+  <div class="hero">🌈🎁</div>
+  <h1>AMEL'S RAINBOW ARCADE!</h1>
+  <div class="rainbow"></div>
+  <p>HELLOOO AMELLL!! 💗</p>
+  <p>Ada mesin capit khusus buat kamu.</p>
+  <p>Di dalamnya ada boneka, hadiah, kejutan, dan pesan rahasia!</p>
+  <h2>SIAP MAIN??</h2>
+  <button onclick="enterGame()">LET'S PLAY!! 🎮</button>
+  <button class="music-btn" onclick="toggleMusic()">🎵 PLAY MUSIC</button>
+  <p class="small">Made especially for Amel ♡</p>
+ </div>
+</section>
+
+<!-- GAME -->
+<section class="screen" id="game">
+ <div class="topbar">
+  <span class="pill">🪙 Koin: <b id="coins">5</b></span>
+  <span class="pill">🎁 Hadiah: <b id="total">0</b></span>
+ </div>
+
+ <div class="card">
+  <h1>RAINBOW CLAW MACHINE</h1>
+  <p>Gerakkan capit ke kiri dan kanan, lalu ambil hadiah!</p>
+
+  <div class="machine">
+   <div class="machine-top">✨ AMEL'S TOY SHOP ✨</div>
+   <div class="window" id="window">
+    <div id="claw">
+     <div class="cable"></div>
+     <div class="grabber"></div>
+    </div>
+    <div id="toys"></div>
+    <div class="floor"></div>
+   </div>
+  </div>
+
+  <div class="machine-controls">
+   <button onclick="move(-1)">⬅️ KIRI</button>
+   <button onclick="move(1)">KANAN ➡️</button>
+   <button onclick="grab()">⬇️ AMBIL!</button>
+  </div>
+
+  <p id="gameMessage">Pilih posisi capitnya, Amel! 💗</p>
+  <button onclick="show('collection')">🎀 KOLEKSI HADIAH</button>
+  <button onclick="show('extras')">🎁 MENU KEJUTAN</button>
+  <button onclick="show('home')">🏠 HOME</button>
+  <p class="small">1 kali mengambil hadiah = 1 koin.</p>
+ </div>
+</section>
+
+<!-- COLLECTION -->
+<section class="screen" id="collection">
+ <div class="card">
+  <div class="hero">🏆</div>
+  <h1>AMEL'S COLLECTION</h1>
+  <p>Ini semua hadiah yang berhasil kamu dapatkan!</p>
+  <div id="collectionList">
+   <p>Belum ada hadiah. Yuk main dulu!</p>
+  </div>
+  <button onclick="show('game')">MAIN LAGI 🎮</button>
+ </div>
+</section>
+
+<!-- EXTRAS -->
+<section class="screen" id="extras">
+ <div class="card">
+  <div class="hero">🎀</div>
+  <h1>RAINBOW SURPRISE!</h1>
+  <p>Banyak kejutan yang menunggumu.</p>
+  <button onclick="spin()">🎰 SPIN PESAN RANDOM</button>
+  <button onclick="openCapsule()">🫧 BUKA KAPSUL</button>
+  <button onclick="show('secret')">🔐 PESAN RAHASIA</button>
+  <button onclick="show('game')">KEMBALI</button>
+  <h2 id="extraResult">Pilih salah satu kejutan!</h2>
+ </div>
+</section>
+
+<!-- SECRET -->
+<section class="screen" id="secret">
+ <div class="card">
+  <div class="hero">💌</div>
+  <h1>HEY AMEL...</h1>
+  <p>Ada pesan yang cuma boleh kamu baca.</p>
+  <button onclick="revealSecret()">BUKA PESAN RAHASIA 💗</button>
+  <p id="secretText"></p>
+  <button onclick="show('extras')">KEMBALI</button>
+ </div>
+</section>
+
+<!-- ENDING -->
+<section class="screen" id="ending">
+ <div class="card">
+  <div class="hero">🌈💗</div>
+  <h1>YOU ARE THE WINNER!</h1>
+  <p>Selamat, Amel sudah menjadi juara Rainbow Arcade!</p>
+  <h2>THE CUTEST PLAYER EVER 🏆</h2>
+  <p>Semoga hari kamu selalu penuh warna, tawa, dan hal-hal menyenangkan.</p>
+  <button onclick="show('game')">MAIN LAGI 🎮</button>
+  <button onclick="show('home')">HOME 🏠</button>
+ </div>
+</section>
+
+<!-- POPUP HADIAH -->
+<div id="popup">
+ <div class="popup-card">
+  <div id="popupEmoji">🎁</div>
+  <h2 id="popupTitle">YOU GOT A PRIZE!</h2>
+  <p id="popupText"></p>
+  <button onclick="closePopup()">YEAYYY!! 💗</button>
+ </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+let coins=5;
+let total=0;
+let position=50;
+let busy=false;
+let prizes=[];
+let collected=[];
+
+const prizePool=[
+ {emoji:"🧸",name:"Teddy Bear",message:"Satu boneka beruang khusus buat Amel!"},
+ {emoji:"🐰",name:"Bunny Plush",message:"Kelinci kecil yang super gemoy!"},
+ {emoji:"🐥",name:"Baby Chick",message:"Anak ayam kecil yang suka bilang peep peep!"},
+ {emoji:"🐸",name:"Froggy",message:"Katanya dia ingin jadi teman Amel!"},
+ {emoji:"🍓",name:"Strawberry",message:"Buah stroberi manis untuk manusia manis!"},
+ {emoji:"🌈",name:"Rainbow",message:"Semoga hidup Amel selalu penuh warna!"},
+ {emoji:"⭐",name:"Magic Star",message:"Satu bintang keberuntungan untukmu!"},
+ {emoji:"💗",name:"Pink Heart",message:"Satu hati penuh kasih sayang!"},
+ {emoji:"🐱",name:"Kitty",message:"Meowww! Kucing ini memilih Amel!"}
+];
+
+function show(id){
+ document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
+ $(id).style.display='flex';
+ window.scrollTo(0,0);
+ if(id==='collection')renderCollection();
+}
+
+function enterGame(){
+ show('game');
+ addCoins(0);
+ if(!musicStarted)toggleMusic();
+}
+
+let musicStarted=false;
+
+function toggleMusic(){
+ const audio=$('music');
+ if(audio.paused){
+  audio.play().then(()=>{
+   musicStarted=true;
+   document.querySelectorAll('.music-btn').forEach(b=>b.textContent="⏸ PAUSE MUSIC");
+  }).catch(()=>alert("Periksa file MP3 dan coba lagi ya!"));
+ }else{
+  audio.pause();
+  document.querySelectorAll('.music-btn').forEach(b=>b.textContent="🎵 PLAY MUSIC");
+ }
+}
+
+function addCoins(n){
+ coins+=n;
+ $('coins').textContent=coins;
+ $('total').textContent=total;
+}
+
+function createToys(){
+ const box=$('toys');
+ box.innerHTML='';
+ prizes=[];
+ const positions=[12,30,49,68,87];
+ for(let i=0;i<5;i++){
+  const prize=prizePool[Math.floor(Math.random()*prizePool.length)];
+  prizes.push({ ...prize, x:positions[i] });
+  const el=document.createElement('div');
+  el.className='toy';
+  el.textContent=prize.emoji;
+  el.style.left=positions[i]+'%';
+  el.id='toy'+i;
+  box.appendChild(el);
+ }
+}
+
+createToys();
+
+function move(dir){
+ if(busy)return;
+ position=Math.max(8,Math.min(92,position+dir*10));
+ $('claw').style.left=position+'%';
+ $('gameMessage').textContent="Posisi capit: "+Math.round(position)+"%";
+}
+
+function grab(){
+ if(busy)return;
+ if(coins<=0){
+  $('gameMessage').textContent="KOIN HABIS! Coba spin pesan untuk kejutan! 🥺";
+  return;
+ }
+
+ busy=true;
+ coins--;
+ $('coins').textContent=coins;
+ const claw=$('claw');
+ claw.classList.remove('drop');
+ void claw.offsetWidth;
+ claw.classList.add('drop');
+
+ $('gameMessage').textContent="CAPIT SEDANG TURUNNN!! 🎀";
+
+ setTimeout(()=>{
+  claw.classList.remove('drop');
+
+  const nearest=prizes
+   .map((p,i)=>({p,i,d:Math.abs(p.x-position)}))
+   .sort((a,b)=>a.d-b.d)[0];
+
+  if(nearest && nearest.d<13){
+   const item=nearest.p;
+   const toy=$('toy'+nearest.i);
+   if(toy)toy.remove();
+   collected.push(item);
+   total++;
+   $('total').textContent=total;
+   showPrize(item);
+   $('gameMessage').textContent="YEAYYY DAPAT HADIAH!!";
+  }else{
+   $('gameMessage').textContent="YAHH MELESET 😭 COBA LAGI!";
+   setTimeout(()=>{busy=false},300);
+  }
+ },950);
+}
+
+function showPrize(item){
+ $('popupEmoji').textContent=item.emoji;
+ $('popupTitle').textContent="DAPAT HADIAH!!";
+ $('popupText').textContent=item.name+" — "+item.message;
+ $('popup').style.display='flex';
+ confetti();
+}
+
+function closePopup(){
+ $('popup').style.display='none';
+ createToys();
+ busy=false;
+ if(total===5){
+  $('gameMessage').textContent="AMEL SUDAH DAPAT 5 HADIAH!! 🏆";
+ }
+}
+
+function renderCollection(){
+ const box=$('collectionList');
+ if(collected.length===0){
+  box.innerHTML="<p>Belum ada hadiah. Yuk main dulu! 🎁</p>";
+  return;
+ }
+ box.innerHTML="";
+ collected.forEach(p=>{
+  const el=document.createElement('div');
+  el.className='prize';
+  el.textContent=p.emoji;
+  const small=document.createElement('small');
+  small.textContent=p.name;
+  el.appendChild(small);
+  box.appendChild(el);
+ });
+}
+
+function spin(){
+ const messages=[
+  "AMEL MENDAPAT 1000 POIN KEGEMOYAN!! 💗",
+  "KAMU ADALAH PEMAIN PALING BERUNTUNG! 🍀",
+  "KIRIM PELUKAN VIRTUAL UNTUK AMEL! 🫂",
+  "WARNING: TERLALU LUCU UNTUK DUNIA INI 😭",
+  "HADIAH SPESIAL: SATU JUTA LOVE!! 💖",
+  "KUCING ARCADE MENYUKAI KAMU! 🐱"
+ ];
+ $('extraResult').textContent="🎰 "+messages[Math.floor(Math.random()*messages.length)];
+ confetti();
+}
+
+function openCapsule(){
+ const capsules=[
+  "💗 Kamu punya senyum yang berharga!",
+  "🌷 Semoga hari ini menyenangkan!",
+  "⭐ Kamu layak mendapat banyak hal baik!",
+  "🧸 Ada boneka virtual yang ingin berteman!",
+  "🍭 Kamu mendapat permen imajiner!",
+  "🌈 Jangan lupa bersenang-senang!"
+ ];
+ $('extraResult').textContent="🫧 "+capsules[Math.floor(Math.random()*capsules.length)];
+ confetti();
+}
+
+function revealSecret(){
+ $('secretText').textContent=
+ "Hai Amel! 💗 Gue cuma mau bilang, makasih sudah hadir dan menjadi bagian dari cerita gue. Semoga kita bisa terus berbagi tawa, cerita random, dan kenangan yang menyenangkan. Jangan lupa bahagia dan tetap jadi diri sendiri, ya! YOU'RE MY FAVORITE HUMAN!! 🌈";
+ confetti();
+}
+
+function confetti(){
+ const emojis=['🌈','💗','⭐','🎀','✨','🌸','💛'];
+ for(let i=0;i<35;i++){
+  const el=document.createElement('div');
+  el.className='float';
+  el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  el.style.left=Math.random()*100+'vw';
+  el.style.fontSize=(15+Math.random()*22)+'px';
+  el.style.animationDuration=(2+Math.random()*3)+'s';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),5500);
+ }
+}
+
+document.addEventListener('keydown',e=>{
+ if($('game').style.display==='flex'){
+  if(e.key==='ArrowLeft')move(-1);
+  if(e.key==='ArrowRight')move(1);
+  if(e.key==='Enter')grab();
+ }
+});
+
+setInterval(()=>{
+ const el=document.createElement('div');
+ el.className='float';
+ el.textContent=['🌈','⭐','💗','🌸','✨'][Math.floor(Math.random()*5)];
+ el.style.left=Math.random()*100+'vw';
+ el.style.animationDuration=(4+Math.random()*4)+'s';
+ document.body.appendChild(el);
+ setTimeout(()=>el.remove(),8000);
+},1000);
+</script>
+
+</body>
+  </html>
